@@ -1,54 +1,38 @@
-/*
- * Copyright (C) 2016 wanghong
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.wanghong.eglposter.fragment;
 
-package com.wanghong.eglposter;
-
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.wanghong.R;
+import com.wanghong.eglposter.C;
 import com.wanghong.output.EGLOutputRenderer;
 import com.wanghong.output.EGLOutputSurface;
 import com.wanghong.output.EGLOutputSurfaceCallback;
 
 import java.io.IOException;
-import com.wanghong.R;
 
 /**
- * In this example, we use GLSurfaceView to play video from media player<br/>
- * We create {@link SurfaceTexture} manually after GLSurfaceView initialized, <br/>
- * and use this SurfaceTexture as media player output<br/>
- * <br/>
- * In the shader language, we use another 2D texture to render a single picture from bitmap.
- * <br/> The renderer can switch to different renderer mode, {@link EGLOutputRenderer#OUTPUT_RENDER_TYPE_CONTINUOUS_PICTURES} to play video, and
- * {@link EGLOutputRenderer#OUTPUT_RENDER_TYPE_STILL_BITMAP} to display a video poster
+ * Created by Neo on 2017/6/9.
  */
-public class EGLOutputActivity extends AppCompatActivity {
 
-    private static final String TAG = EGLOutputActivity.class.getSimpleName();
+public class EGLOutputFragment extends Fragment {
+    private static final String TAG = EGLOutputFragment.class.getSimpleName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        final EGLOutputSurface eglOutputSurface = new EGLOutputSurface(this);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final Context context = container.getContext();
+        final EGLOutputSurface eglOutputSurface = new EGLOutputSurface(context);
         eglOutputSurface.setEglOutputSurfaceCallback(new EGLOutputSurfaceCallback() {
             @Override
             public void onOutputSurfaceCreated(SurfaceTexture surfaceTexture) {
@@ -68,7 +52,7 @@ public class EGLOutputActivity extends AppCompatActivity {
                 eglOutputSurface.setOutputRenderType(EGLOutputRenderer.OUTPUT_RENDER_TYPE_CONTINUOUS_PICTURES);
                 AssetFileDescriptor assetFileDescriptor = null;
                 try {
-                    assetFileDescriptor = getAssets().openFd("testsrc2.mp4");
+                    assetFileDescriptor = context.getAssets().openFd((String) getArguments().get(C.FILENAME));
                     final MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(),
                             assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
@@ -101,6 +85,6 @@ public class EGLOutputActivity extends AppCompatActivity {
                 }
             }
         });
-        setContentView(eglOutputSurface);
+        return eglOutputSurface;
     }
 }

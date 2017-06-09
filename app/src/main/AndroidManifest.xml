@@ -15,12 +15,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".eglposter.EGLPosterActivity"
-            android:label="@string/poster_on_texture_view" />
-        <activity
-            android:name=".eglposter.EGLOutputActivity"
-            android:label="@string/poster_on_gl_surface_view" />
     </application>
-
 </manifest>
