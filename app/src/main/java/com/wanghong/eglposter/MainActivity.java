@@ -1,27 +1,29 @@
 package com.wanghong.eglposter;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-public class MainActivity extends AppCompatActivity {
+import android.util.Log;
 
+import com.wanghong.R;
+import com.wanghong.eglposter.fragment.MainFragment;
+
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.wanghong.R.layout.activity_main);
+        setFragment(new MainFragment());
+    }
 
-        findViewById(com.wanghong.R.id.poster_on_texture_view).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), EGLPosterActivity.class));
-            }
-        });
-        findViewById(com.wanghong.R.id.poster_on_gl_surface_view).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), EGLOutputActivity.class));
-            }
-        });
+    private void setFragment(Fragment fragment) {
+        try {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.main_content, fragment)
+                    .commit();
+        } catch (IllegalStateException ex) {
+            Log.d(TAG, "setFragment(): illegal state: " + ex.getMessage());
+        }
     }
 }
